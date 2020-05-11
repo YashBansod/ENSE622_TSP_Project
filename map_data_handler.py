@@ -237,6 +237,10 @@ class ParseCarlaMap(object):
         return np.argmin(distance)
 
     # ******************************        Class Method Declaration        ****************************************** #
+    def write_node_dict_as_csv(self, fname):
+        raise NotImplementedError
+
+    # ******************************        Class Method Declaration        ****************************************** #
     def write_toplogy_ids_as_csv(self, fname):
         topology = np.zeros(shape=(len(self.topology_data["location_from"]["x"]), 3))
         topology[:, 0] = self.topology_data["id_from"]
