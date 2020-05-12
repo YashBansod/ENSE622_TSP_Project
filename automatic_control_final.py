@@ -685,6 +685,9 @@ def game_loop(args):
         client = carla.Client(args.host, args.port)
         client.set_timeout(4.0)
 
+        client.load_world('Town01')
+        client.reload_world()
+
         display = pygame.display.set_mode(
             (args.width, args.height),
             pygame.HWSURFACE | pygame.DOUBLEBUF)
@@ -693,9 +696,9 @@ def game_loop(args):
         world = World(client.get_world(), hud, args)
         controller = KeyboardControl(world)
 
-        map_dir = "D:\\CARLA\\WindowsNoEditor\\PythonAPI\\examples\\Recordings_3\\"
+        map_dir = "D:\\CARLA\\WindowsNoEditor\\PythonAPI\\examples\\Recordings_1\\"
         map_obj = ParseCarlaMap(map_dir)
-        points = [353, 520, 366, 321, 580, 403, 510, 252, 299, 505]
+        points = [46, 81, 132, 10, 40, 14, 110, 71, 58, 4]
         edges = list(permutations(points, 2))
         edge_table = np.zeros(shape=(len(edges), 3), dtype=np.float32)
         edge_table[:, 0:2] = edges
@@ -729,7 +732,7 @@ def game_loop(args):
                                        spawn_point.location.y,
                                        spawn_point.location.z))
             else:
-                agent = BehaviorAgent(world.player, behavior=args.behavior)
+                agent = BehaviorAgent(world.player, ignore_traffic_light=False, behavior=args.behavior)
                 destination = dest_pt.location
 
                 agent.set_destination(agent.vehicle.get_location(), destination, clean=True)
@@ -781,12 +784,12 @@ def game_loop(args):
 
                     control = agent.run_step()
                     world.player.apply_control(control)
-                if time.time() - start_time >= 180:
+                if time.time() - start_time >= 280:
                     break
 
             edge_table[index, 2] = time.time() - start_time
             print("edge %d was completed in %3.3f seconds" % (index, edge_table[index, 2]))
-            np.savetxt('Carla_03_%d.csv' % rand_int, edge_table, fmt="%3d,%3d,%3.3f")
+            np.savetxt('Carla_01_%d.csv' % rand_int, edge_table, fmt="%3d,%3d,%3.3f")
 
     finally:
         if world is not None:
