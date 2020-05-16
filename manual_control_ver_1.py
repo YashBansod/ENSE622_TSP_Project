@@ -55,19 +55,22 @@ from __future__ import print_function
 # ==============================================================================
 
 
-# import glob
+import glob
 import os
 import sys
 
+# try:
+#     sys.path.append("../carla/dist/carla-0.9.9-py3.7-linux-x86_64.egg")
+# except IndexError:
+#     pass
+
 try:
-    # sys.path.append(glob.glob('../carla/dist/carla-*%d.%d-%s.egg' % (
-    #     sys.version_info.major,
-    #     sys.version_info.minor,
-    #     'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
-    sys.path.append("../carla/dist/carla-0.9.9-py3.7-linux-x86_64.egg")
+    sys.path.append(glob.glob('../carla/dist/carla-*%d.%d-%s.egg' % (
+        sys.version_info.major,
+        sys.version_info.minor,
+        'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
 except IndexError:
     pass
-
 
 # ==============================================================================
 # -- imports -------------------------------------------------------------------
@@ -1008,9 +1011,9 @@ def game_loop(args):
 
     try:
         client = carla.Client(args.host, args.port)
-        client.set_timeout(2.0)
+        client.set_timeout(4.0)
 
-        client.load_world('Town07')
+        client.load_world('Town03')
         client.reload_world()
 
         display = pygame.display.set_mode(

@@ -40,12 +40,16 @@ except ImportError:
 # ==============================================================================
 # -- Find CARLA module ---------------------------------------------------------
 # ==============================================================================
+# try:
+#     sys.path.append("/home/yash/Downloads/CARLA_0.9.9/PythonAPI/carla/dist/carla-0.9.9-py3.7-linux-x86_64.egg")
+# except IndexError:
+#     pass
+
 try:
-    # sys.path.append(glob.glob('../carla/dist/carla-*%d.%d-%s.egg' % (
-    #     sys.version_info.major,
-    #     sys.version_info.minor,
-    #     'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
-    sys.path.append("/home/yash/Downloads/CARLA_0.9.9/PythonAPI/carla/dist/carla-0.9.9-py3.7-linux-x86_64.egg")
+    sys.path.append(glob.glob('../carla/dist/carla-*%d.%d-%s.egg' % (
+        sys.version_info.major,
+        sys.version_info.minor,
+        'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
 except IndexError:
     pass
 
@@ -698,7 +702,8 @@ def game_loop(args):
         world = World(client.get_world(), hud, args)
         controller = KeyboardControl(world)
 
-        map_dir = "/home/yash/Downloads/CARLA_0.9.9/PythonAPI/examples/Recordings_%d/" % args.town
+        # map_dir = "/home/yash/Downloads/CARLA_0.9.9/PythonAPI/examples/Recordings_%d/" % args.town
+        map_dir = "D:\\CARLA\\WindowsNoEditor\\PythonAPI\\examples\\Recordings_%d\\" % args.town
         map_obj = ParseCarlaMap(map_dir)
         points = [46, 81, 132, 10, 40, 14, 110, 71, 58, 4]
 
