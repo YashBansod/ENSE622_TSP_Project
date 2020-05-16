@@ -1010,7 +1010,7 @@ def game_loop(args):
         client = carla.Client(args.host, args.port)
         client.set_timeout(2.0)
 
-        client.load_world('Town03')
+        client.load_world('Town07')
         client.reload_world()
 
         display = pygame.display.set_mode(

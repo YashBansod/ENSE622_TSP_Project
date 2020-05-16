@@ -224,6 +224,17 @@ class ParseCarlaMap(object):
         self.node_dict = pickle.load(open(self._nd_pkl_path, "rb"))
 
     # ******************************        Class Method Declaration        ****************************************** #
+    def write_nodes_as_csv(self, node_indices, fname):
+        node_table = np.zeros(shape=(len(node_indices), 3))
+        node_table[:, 0] = node_indices
+        node_table[:, 1] = np.array(self.node_dict["location"]["x"])[node_indices]
+        node_table[:, 2] = np.array(self.node_dict["location"]["y"])[node_indices]
+
+        file_path = self._root_path + fname
+        # noinspection PyTypeChecker
+        np.savetxt(file_path, node_table, fmt="%3d,%3.3f,%3.3f")
+
+    # ******************************        Class Method Declaration        ****************************************** #
     def eu_dist(self, x_cord, y_cord):
         delta_x = self.waypoint_data["location"]["x"] - x_cord
         delta_y = self.waypoint_data["location"]["y"] - y_cord
@@ -235,10 +246,6 @@ class ParseCarlaMap(object):
     def nearest_wp_index(self, x_cord, y_cord):
         distance = self.eu_dist(x_cord, y_cord)
         return np.argmin(distance)
-
-    # ******************************        Class Method Declaration        ****************************************** #
-    def write_node_dict_as_csv(self, fname):
-        raise NotImplementedError
 
     # ******************************        Class Method Declaration        ****************************************** #
     def write_toplogy_ids_as_csv(self, fname):

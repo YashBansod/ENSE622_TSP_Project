@@ -41,10 +41,11 @@ except ImportError:
 # -- Find CARLA module ---------------------------------------------------------
 # ==============================================================================
 try:
-    sys.path.append(glob.glob('../carla/dist/carla-*%d.%d-%s.egg' % (
-        sys.version_info.major,
-        sys.version_info.minor,
-        'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
+    # sys.path.append(glob.glob('../carla/dist/carla-*%d.%d-%s.egg' % (
+    #     sys.version_info.major,
+    #     sys.version_info.minor,
+    #     'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
+    sys.path.append("/home/yash/Downloads/CARLA_0.9.9/PythonAPI/carla/dist/carla-0.9.9-py3.7-linux-x86_64.egg")
 except IndexError:
     pass
 
@@ -62,6 +63,7 @@ from agents.navigation.behavior_agent import BehaviorAgent
 from agents.navigation.roaming_agent import RoamingAgent
 from agents.navigation.basic_agent import BasicAgent
 
+sys.path.append("/home/yash/Downloads/CARLA_0.9.9/PythonAPI/")
 from map_data_handler import ParseCarlaMap
 from itertools import permutations
 
@@ -685,7 +687,7 @@ def game_loop(args):
         client = carla.Client(args.host, args.port)
         client.set_timeout(4.0)
 
-        client.load_world('Town01')
+        client.load_world('Town0%d' % args.town)
         client.reload_world()
 
         display = pygame.display.set_mode(
@@ -696,9 +698,10 @@ def game_loop(args):
         world = World(client.get_world(), hud, args)
         controller = KeyboardControl(world)
 
-        map_dir = "D:\\CARLA\\WindowsNoEditor\\PythonAPI\\examples\\Recordings_1\\"
+        map_dir = "/home/yash/Downloads/CARLA_0.9.9/PythonAPI/examples/Recordings_%d/" % args.town
         map_obj = ParseCarlaMap(map_dir)
         points = [46, 81, 132, 10, 40, 14, 110, 71, 58, 4]
+
         edges = list(permutations(points, 2))
         edge_table = np.zeros(shape=(len(edges), 3), dtype=np.float32)
         edge_table[:, 0:2] = edges
@@ -716,10 +719,10 @@ def game_loop(args):
             dest_loc = carla.Location(x=map_obj.node_dict["location"]["x"][dest_index],
                                        y=map_obj.node_dict["location"]["y"][dest_index],
                                        z=map_obj.node_dict["location"]["z"][dest_index])
-            dest_rot = carla.Rotation(roll=map_obj.node_dict["rotation"]["roll"][dest_index],
-                                       pitch=map_obj.node_dict["rotation"]["pitch"][dest_index],
-                                       yaw=map_obj.node_dict["rotation"]["yaw"][dest_index])
-            dest_pt = carla.Transform(location=dest_loc, rotation=dest_rot)
+            # dest_rot = carla.Rotation(roll=map_obj.node_dict["rotation"]["roll"][dest_index],
+            #                            pitch=map_obj.node_dict["rotation"]["pitch"][dest_index],
+            #                            yaw=map_obj.node_dict["rotation"]["yaw"][dest_index])
+            # dest_pt = carla.Transform(location=dest_loc, rotation=dest_rot)
 
             world.restart(args, spawn_pt=spawn_pt)
 
@@ -732,10 +735,8 @@ def game_loop(args):
                                        spawn_point.location.y,
                                        spawn_point.location.z))
             else:
-                agent = BehaviorAgent(world.player, ignore_traffic_light=False, behavior=args.behavior)
-                destination = dest_pt.location
-
-                agent.set_destination(agent.vehicle.get_location(), destination, clean=True)
+                agent = BehaviorAgent(world.player, ignore_traffic_light=args.ignore_traffic_light, behavior=args.behavior)
+                agent.set_destination(agent.vehicle.get_location(), dest_loc, clean=True)
 
             clock = pygame.time.Clock()
             start_time = time.time()
@@ -789,7 +790,7 @@ def game_loop(args):
 
             edge_table[index, 2] = time.time() - start_time
             print("edge %d was completed in %3.3f seconds" % (index, edge_table[index, 2]))
-            np.savetxt('Carla_01_%d.csv' % rand_int, edge_table, fmt="%3d,%3d,%3.3f")
+            np.savetxt('Carla_0%d_%d.csv' % (args.town, rand_int), edge_table, fmt="%3d,%3d,%3.3f")
 
     finally:
         if world is not None:
@@ -858,6 +859,17 @@ def main():
         help='Set seed for repeating executions (default: None)',
         default=None,
         type=int)
+    argparser.add_argument(
+        '-t', '--town',
+        metavar='T',
+        default=3,
+        type=int,
+        help='The Carla Town to use for simulation')
+    argparser.add_argument(
+        '-i', '--ignore',
+        action='store_true',
+        dest='ignore_traffic_light',
+        help='Ignore Traffic Light')
 
     args = argparser.parse_args()
 
