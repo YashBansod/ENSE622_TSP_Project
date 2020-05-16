@@ -1,0 +1,5 @@
+Map -1 Node Points (Python Index)
+[46,58,82,132,10,40,14,110,71,58,4]
+
+Map -1 Node Points (Python Index)
+[353, 520 ,366, 321, 580, 403, 510 252, 299, 505]
