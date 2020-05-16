@@ -25,8 +25,8 @@ y_ind = randi(map_size(2), 1, num_nodes);
 for curr_ind = 2:num_nodes
     for ind = 1:curr_ind - 1
         if (x_ind(curr_ind) == x_ind(ind) && y_ind(curr_ind) == y_ind(ind))
-            x_ind = randi(map_size(1));
-            y_ind = randi(map_size(2));
+            x_ind(curr_ind) = randi(map_size(1));
+            y_ind(curr_ind) = randi(map_size(2));
             ind = 1;
         end
     end 
